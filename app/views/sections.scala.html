@@ -1,0 +1,31 @@
+@(sections: List[Section], sectionForm: Form[Section])
+
+@import helper._
+
+@main("Todo list") {
+    
+    <h1>@sections.size() section(s)</h1>
+    
+    <ul>
+        @for(section <- sections) {
+            <li>
+            	<h2>@section.label</h2>
+                
+                @form(routes.Sections.deleteSection(section.id)) {
+                    <input type="submit" value="Delete">
+                }
+            </li>
+        }
+    </ul>
+    
+    <h2>Add a new section</h2>
+    
+    @form(routes.Sections.newSection()) {
+        
+        @inputText(sectionForm("label"))
+        
+        <input type="submit" value="Create">
+        
+    }
+    
+}

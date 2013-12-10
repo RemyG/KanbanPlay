@@ -1,10 +1,10 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
 import play.data.validation.Constraints.Required;
 import play.db.ebean.Model;
@@ -17,6 +17,12 @@ public class Task extends Model {
 
 	@Required
 	public String label;
+	
+	public String description;
+	
+	@ManyToOne
+	@Required
+	public Section section;
 
 	public static Finder<Long, Task> find = new Finder(Long.class, Task.class);
 

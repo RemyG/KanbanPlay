@@ -1,0 +1,30 @@
+div.container {
+	width: auto;
+}
+
+div.sections {
+	overflow-x: auto;
+	height: 100%;
+	white-space: nowrap;
+	position: relative;
+	bottom: 0;
+	div.section {
+		display: inline-block;
+		overflow-y: auto;
+		width: 300px;
+		border: 1px solid grey;
+		padding: 10px;
+		margin: 5px;
+		vertical-align: top;
+		&:first-child {
+			margin-left: 0;
+		}
+		div.tasks {
+			div.task {
+				border: 1px solid grey;
+				padding: 10px;
+				margin-bottom: 10px;
+			}
+		}
+	}
+}

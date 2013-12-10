@@ -1,0 +1,13 @@
+@(task: Task)
+
+@import helper._
+
+@main("Task") {
+    
+    <h1>Task: @task.label</h1>
+    
+    <div class="description">@task.description</div>
+    
+    <div class="section">@task.section.label</div>
+    
+}

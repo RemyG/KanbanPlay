@@ -1,31 +1,77 @@
-@(tasks: List[Task], taskForm: Form[Task])
+@(tasks: List[Task], taskForm: Form[Task], sections: List[Section], sectionForm: Form[Section])
 
 @import helper._
 
-@main("Todo list") {
+@main("KanbanPlay") {
     
-    <h1>@tasks.size() task(s)</h1>
+    <h1>KanbanPlay</h1>
     
-    <ul>
-        @for(task <- tasks) {
-            <li>
-                @task.label
-                
-                @form(routes.Application.deleteTask(task.id)) {
-                    <input type="submit" value="Delete">
-                }
-            </li>
-        }
-    </ul>
+    <button type="button" data-toggle="modal" data-target="#newSection">Add section</button>
     
-    <h2>Add a new task</h2>
+    <div class="sections">
     
-    @form(routes.Application.newTask()) {
-        
-        @inputText(taskForm("label")) 
-        
-        <input type="submit" value="Create">
-        
-    }
+    	@for(section <- sections) {
+    		<div class="section">
+    			<h2>@section.label</h2>
+    			<div class="tasks">
+    				@for(task <- section.tasks) {
+    					<div class="task">
+    						<a href="/tasks/@task.id">@task.label</a>
+    						<div class="description">@task.description</div>
+	    					@form(routes.Application.deleteTask(task.id)) {
+			                    <input type="submit" value="Delete">
+			                }
+    					</div>
+    				}
+    			</div>
+    			
+    			<button type="button" data-toggle="modal" data-target="#newTask"
+    				onClick="$('#newTask').find('#sectionId').val(@section.id)">
+    				Add task
+    			</button>
+    			
+    		</div>
+    	}
     
+    </div>
+    
+    <div class="modal fade newSection" id="newSection">
+		<div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">New section</h4>
+                </div>
+                <div class="modal-body">
+					@form(routes.Sections.newSection()) {
+					
+						@inputText(sectionForm("label"))
+						
+						<input type="submit" value="Create">
+						
+					}
+				</div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
+    
+    <div class="modal fade newTask" id="newTask">
+	    <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title">New task</h4>
+                </div>
+                <div class="modal-body">
+                    @form(routes.Application.newTask()) {
+
+                        @inputText(taskForm("label"))
+                        @inputText(taskForm("description"))
+                        <input type="hidden" id="sectionId" name="section.id" />
+                        <input type="submit" value="Create">
+                    }
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div>
 }
