@@ -6,28 +6,31 @@
     
     <h1>KanbanPlay</h1>
     
-    <button type="button" data-toggle="modal" data-target="#newSection">Add section</button>
+    <button class="btn btn-default" type="button" data-toggle="modal" data-target="#newSection">
+		<span class="glyphicon glyphicon-plus-sign"></span> New section
+    </button>
     
     <div class="sections">
     
     	@for(section <- sections) {
-    		<div class="section">
+    		<div class="section" data-id="@section.id">
     			<h2>@section.label</h2>
-    			<div class="tasks">
+    			<ul class="tasks">
     				@for(task <- section.tasks) {
-    					<div class="task">
+    					<!-- <li class="task ui-draggable-dragging"> -->
+    					<li class="task" data-id="@task.id">
     						<a href="/tasks/@task.id">@task.label</a>
     						<div class="description">@task.description</div>
 	    					@form(routes.Application.deleteTask(task.id)) {
-			                    <input type="submit" value="Delete">
+								<span class="glyphicon glyphicon-remove-sign delete" onClick="$(this).parents('form:first').submit()"></span>
 			                }
-    					</div>
+    					</li>
     				}
-    			</div>
+    			</ul>
     			
-    			<button type="button" data-toggle="modal" data-target="#newTask"
+    			<button class="btn btn-default" type="button" data-toggle="modal" data-target="#newTask"
     				onClick="$('#newTask').find('#sectionId').val(@section.id)">
-    				Add task
+    				<span class="glyphicon glyphicon-plus-sign"></span> New task
     			</button>
     			
     		</div>
@@ -68,10 +71,38 @@
                         @inputText(taskForm("label"))
                         @inputText(taskForm("description"))
                         <input type="hidden" id="sectionId" name="section.id" />
-                        <input type="submit" value="Create">
+                        <input type="submit" class="btn btn-primary" value="Create">
                     }
                 </div>
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
+    
+    <script>
+		$( "ul.tasks" ).sortable({
+			placeholder: "sortable-placeholder",
+			connectWith: "ul.tasks",
+			stop: function( event, ui ) {
+				var dragged = ui.item;
+				var taskId = dragged.attr("data-id");
+				var sectionId = dragged.parents("div.section").attr("data-id");
+				$.ajax({
+					type : 'POST',
+					url : "@routes.Application.updateSectionForTask()",
+					data : {
+						taskId: dragged.attr("data-id"),
+						sectionId: dragged.parents("div.section").attr("data-id")
+					},
+					dataType : "text",
+					success : function(data) {
+						
+					},
+					error : function(data) {
+						alert('Make call failed');
+					}
+				});
+			}
+		}).disableSelection();
+		
+	</script>
 }

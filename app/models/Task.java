@@ -12,19 +12,25 @@ import play.db.ebean.Model;
 @Entity
 public class Task extends Model {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1595597376553109611L;
+
 	@Id
 	public Long id;
 
 	@Required
 	public String label;
-	
+
 	public String description;
-	
+
 	@ManyToOne
 	@Required
 	public Section section;
 
-	public static Finder<Long, Task> find = new Finder(Long.class, Task.class);
+	public static Finder<Long, Task> find = new Finder<Long, Task>(Long.class,
+			Task.class);
 
 	public static List<Task> all() {
 		return find.all();
@@ -38,4 +44,13 @@ public class Task extends Model {
 		find.ref(id).delete();
 	}
 
+	public void updateSection(Section section) {
+		Section oldSection = this.section;
+		oldSection.tasks.remove(this);
+		oldSection.update();
+		this.section = section;
+		section.tasks.add(this);
+		section.update();
+		this.update();
+	}
 }

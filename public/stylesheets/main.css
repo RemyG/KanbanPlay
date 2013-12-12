@@ -17,7 +17,24 @@ div.sections {
     vertical-align: top; }
     div.sections div.section:first-child {
       margin-left: 0; }
-    div.sections div.section div.tasks div.task {
-      border: 1px solid grey;
-      padding: 10px;
-      margin-bottom: 10px; }
+    div.sections div.section ul.tasks {
+      min-height: 50px;
+      height: auto;
+      list-style-type: none;
+      padding: 0px;
+      margin: 0px; }
+      div.sections div.section ul.tasks .sortable-placeholder {
+        height: 40px;
+        border: 1px dashed grey;
+        margin-bottom: 10px; }
+      div.sections div.section ul.tasks li.task {
+        background-color: white;
+        border: 1px solid grey;
+        width: 280px;
+        padding: 10px;
+        margin-bottom: 10px;
+        position: relative; }
+        div.sections div.section ul.tasks li.task span.delete {
+          position: absolute;
+          top: 5px;
+          right: 5px; }

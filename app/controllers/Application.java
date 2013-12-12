@@ -2,6 +2,7 @@ package controllers;
 
 import models.Section;
 import models.Task;
+import play.data.DynamicForm;
 import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -37,6 +38,16 @@ public class Application extends Controller {
 	public static Result showTask(Long id) {
 		Task task = Task.find.byId(id);
 		return ok(views.html.task.render(task));
+	}
+	
+	public static Result updateSectionForTask() {
+		DynamicForm requestData = Form.form().bindFromRequest();
+		Long taskId = Long.parseLong(requestData.get("taskId"));
+		Long sectionId = Long.parseLong(requestData.get("sectionId"));
+		Task task = Task.find.byId(taskId);
+		Section section = Section.find.byId(sectionId);
+		task.updateSection(section);
+		return ok("Done");
 	}
 
 }

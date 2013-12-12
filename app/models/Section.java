@@ -14,6 +14,11 @@ import play.db.ebean.Model;
 @Entity
 public class Section extends Model {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5447691313120572966L;
+
 	@Id
 	public Long id;
 
@@ -23,7 +28,7 @@ public class Section extends Model {
 	@OneToMany
 	public List<Task> tasks;
 
-	public static Finder<Long, Section> find = new Finder(Long.class, Section.class);
+	public static Finder<Long, Section> find = new Finder<Long, Section>(Long.class, Section.class);
 
 	public static List<Section> all() {
 		return find.all();

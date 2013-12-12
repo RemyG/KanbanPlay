@@ -19,11 +19,29 @@ div.sections {
 		&:first-child {
 			margin-left: 0;
 		}
-		div.tasks {
-			div.task {
+		ul.tasks {
+			min-height: 50px;
+			height: auto;
+			list-style-type: none;
+			padding: 0px;
+			margin: 0px;
+			.sortable-placeholder {
+				height: 40px;
+				border: 1px dashed grey;
+				margin-bottom: 10px;
+			}
+			li.task {
+				background-color: white;
 				border: 1px solid grey;
+				width: 280px;
 				padding: 10px;
 				margin-bottom: 10px;
+				position: relative;
+				span.delete {
+					position: absolute;
+					top: 5px;
+					right: 5px;
+				}
 			}
 		}
 	}
