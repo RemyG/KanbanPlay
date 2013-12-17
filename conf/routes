@@ -8,10 +8,9 @@ GET     /                           controllers.Application.index()
 GET		/tasks						controllers.Application.tasks()
 POST	/tasks						controllers.Application.newTask()
 POST	/tasks/:id/delete			controllers.Application.deleteTask(id: Long)
-GET		/tasks/:id					controllers.Application.showTask(id: Long)
+POST	/tasks/update				controllers.Application.updateTask()
 POST	/tasks/updateSection		controllers.Application.updateSectionForTask()
 
-GET		/sections					controllers.Sections.getSections()
 POST	/sections					controllers.Sections.newSection()
 POST	/sections/:id/delete		controllers.Sections.deleteSection(id: Long)
 

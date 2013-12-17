@@ -43,6 +43,12 @@ public class Task extends Model {
 	public static void delete(Long id) {
 		find.ref(id).delete();
 	}
+	
+	public void update(Task task) {
+		label = task.label;
+		description = task.description;
+		this.save();
+	}
 
 	public void updateSection(Section section) {
 		Section oldSection = this.section;

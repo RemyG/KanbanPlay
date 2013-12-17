@@ -1,5 +1,6 @@
 @(tasks: List[Task], taskForm: Form[Task], sections: List[Section], sectionForm: Form[Section])
 
+@import helper.twitterBootstrap._
 @import helper._
 
 @main("KanbanPlay") {
@@ -15,11 +16,15 @@
     	@for(section <- sections) {
     		<div class="section" data-id="@section.id">
     			<h2>@section.label</h2>
+    			
+    			<span class="glyphicon glyphicon-plus-sign newTask" data-toggle="modal" data-target="#newTask"
+    				onClick="$('#newTask').find('#sectionId').val(@section.id)"></span>
+    				
     			<ul class="tasks">
     				@for(task <- section.tasks) {
     					<!-- <li class="task ui-draggable-dragging"> -->
     					<li class="task" data-id="@task.id">
-    						<a href="/tasks/@task.id">@task.label</a>
+    						<h3><a href="/tasks/@task.id">@task.label</a></h3>
     						<div class="description">@task.description</div>
 	    					@form(routes.Application.deleteTask(task.id)) {
 								<span class="glyphicon glyphicon-remove-sign delete" onClick="$(this).parents('form:first').submit()"></span>
@@ -28,10 +33,6 @@
     				}
     			</ul>
     			
-    			<button class="btn btn-default" type="button" data-toggle="modal" data-target="#newTask"
-    				onClick="$('#newTask').find('#sectionId').val(@section.id)">
-    				<span class="glyphicon glyphicon-plus-sign"></span> New task
-    			</button>
     			
     		</div>
     	}
@@ -47,10 +48,8 @@
                 </div>
                 <div class="modal-body">
 					@form(routes.Sections.newSection()) {
-					
-						@inputText(sectionForm("label"))
-						
-						<input type="submit" value="Create">
+						@inputText(sectionForm("label"), args = 'class -> "form-control")
+						<input type="submit" class="btn btn-primary" value="Create">
 						
 					}
 				</div>
@@ -68,8 +67,8 @@
                 <div class="modal-body">
                     @form(routes.Application.newTask()) {
 
-                        @inputText(taskForm("label"))
-                        @inputText(taskForm("description"))
+                        @inputText(taskForm("label"), args = 'class -> "form-control")
+                        @textarea(taskForm("description"), args = 'class -> "form-control", 'rows -> 5)
                         <input type="hidden" id="sectionId" name="section.id" />
                         <input type="submit" class="btn btn-primary" value="Create">
                     }
@@ -77,11 +76,35 @@
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
     </div>
-    
-    <script>
+
+	<div class="modal fade viewTask" id="viewTask">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+					<h4 class="modal-title">Task</h4>
+				</div>
+				<div class="modal-body">
+					@form(routes.Application.updateTask()) {
+						<input type="hidden" name="id" />
+						@inputText(taskForm("label"), args = 'class -> "form-control")
+						@textarea(taskForm("description"), args = 'class -> "form-control", 'rows -> 5)
+						@select(taskForm("section.id"), options(Section.options), args = 'class -> "form-control")
+						<input type="submit" class="btn btn-primary" value="Update">
+					}
+				</div>
+			</div>
+		</div>
+	</div>
+
+<script>
 		$( "ul.tasks" ).sortable({
 			placeholder: "sortable-placeholder",
 			connectWith: "ul.tasks",
+			appendTo: "div.sections",
+			helper: "clone",
+			scroll: true,
+		    tolerance: "pointer",
 			stop: function( event, ui ) {
 				var dragged = ui.item;
 				var taskId = dragged.attr("data-id");
@@ -103,6 +126,36 @@
 				});
 			}
 		}).disableSelection();
+		
+		$( "li.task a").click(function(event) {
+			event.preventDefault();
+			var form = $("div#viewTask").find("form");
+			var task = $( this ).closest("li.task");
+			form.find("input[name='label']").val(task.find("a").html());
+			form.find("input[name='id']").val(task.attr("data-id"));
+			form.find("textarea[name='description']").val(task.find("div.description").html());
+			var sectionId = task.closest("div.section").attr("data-id");
+			$('option:selected', 'select[name="section.id"]').removeAttr('selected');
+			$('select[name="section.id"]').find('option[value="'+sectionId+'"]').attr("selected",true);
+			
+			$("div#viewTask").modal('show');
+			
+		});
+		
+		$(document).ready(resizeLists);
+		$(window).on('resize', resizeLists);
+		
+		function resizeLists()
+		{
+		    var height = $("div.section").height();
+	    	$("ul.tasks").height(height-100);
+	    	$("ul.tasks").each(function () {
+	    		var parent = $(this).closest("div.section");
+	    		var offset = parent.offset().top;
+	    		offset = $(this).offset().top - offset;
+	    		$(this).height(parent.height() - offset - 10);
+	    	});
+		}
 		
 	</script>
 }

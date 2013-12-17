@@ -29,15 +29,26 @@ public class Application extends Controller {
 			return redirect(routes.Application.tasks());
 		}
 	}
+	
+	public static Result updateTask() {
+		Form<Task> filledForm = taskForm.bindFromRequest();
+		if (filledForm.hasErrors()) {
+			return badRequest(views.html.index.render(Task.all(), filledForm, Section.all(), sectionForm));
+		} else {
+			Task newValues = filledForm.get();
+			Task task = Task.find.byId(newValues.id);
+			task.update(newValues);
+			Section newSection = Section.find.byId(newValues.section.id);
+			if (newSection.id != task.section.id) {
+				task.updateSection(newSection);
+			}
+			return redirect(routes.Application.tasks());
+		}
+	}
 
 	public static Result deleteTask(Long id) {
 		Task.delete(id);
 		return redirect(routes.Application.tasks());
-	}
-	
-	public static Result showTask(Long id) {
-		Task task = Task.find.byId(id);
-		return ok(views.html.task.render(task));
 	}
 	
 	public static Result updateSectionForTask() {
